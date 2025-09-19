@@ -1,0 +1,21 @@
+version: '2'
+services:
+  dev:
+    image: "dev:python3"
+    build:
+      context: "."
+      dockerfile: ./dev/Dockerfile
+      args:
+        # Update 'VARIANT' to pick a Python version: 3, 3.10, 3.11, 3.12
+        # Available image variants: https://github.com/microsoft/vscode-dev-containers/blob/main/containers/python-3/README.md
+        VARIANT: "3"
+        # Download Kotlin LSP for VS Code
+        # Available versions: https://github.com/Kotlin/kotlin-lsp/releases
+        DOWNLOAD_KOTLIN_LSP: "true"
+        KOTLIN_LSP_VERSION: "0.253.10629"
+    volumes:
+      - ..:/home/vscode/dev/code:cached
+      - ./dev/.vscode:/home/vscode/dev/.vscode:cached
+    tty: true
+    command: bash
+
