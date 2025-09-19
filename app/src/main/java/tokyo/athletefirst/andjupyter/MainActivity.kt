@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import tokyo.athletefirst.andjupyter.ui.theme.AndJupyterTheme
+import tokyo.athletefirst.libandjupyter.HelloWorld
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +34,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
+//        text = "Hello $name!",
+        text = HelloWorld.formatHelloWorld(name),
         modifier = modifier
     )
 }
