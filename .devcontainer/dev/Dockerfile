@@ -37,3 +37,18 @@ RUN pip3 --disable-pip-version-check --no-cache-dir install --upgrade -r /tmp/pi
 ARG DOWNLOAD_KOTLIN_LSP="true"
 ARG KOTLIN_LSP_VERSION="0.253.10629"
 RUN if [ "${DOWNLOAD_KOTLIN_LSP}" = "true" ]; then su vscode -c "cd /home/vscode && curl -L https://download-cdn.jetbrains.com/kotlin-lsp/${KOTLIN_LSP_VERSION}/kotlin-${KOTLIN_LSP_VERSION}.vsix -o kotlin-lsp.vsix"; fi
+
+USER vscode
+# Android SDK setup
+ARG ANDROID_COMMANDLINE_TOOLS_VERSION="13114758"
+ENV ANDROID_HOME=/home/vscode/android-sdk
+WORKDIR /home/vscode
+RUN wget https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_COMMANDLINE_TOOLS_VERSION}_latest.zip \
+    && unzip ./commandlinetools-linux-${ANDROID_COMMANDLINE_TOOLS_VERSION}_latest.zip \
+    && mkdir -p ~/android-sdk/cmdline-tools/latest \
+    && mv ./cmdline-tools/* ${ANDROID_HOME}/cmdline-tools/latest \
+    && rm ./commandlinetools-linux-${ANDROID_COMMANDLINE_TOOLS_VERSION}_latest.zip
+ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+RUN yes | sdkmanager --licenses || true
+
+USER root
