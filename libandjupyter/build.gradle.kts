@@ -41,3 +41,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
+
+tasks.register<Copy>("copyReleaseJar") {
+    dependsOn("assembleRelease")
+    from("build/intermediates/aar_main_jar/release/syncReleaseLibJars/classes.jar")
+    into("../libandjupyter/libs")
+    rename { "libandjupyter-release.jar" }
+}
