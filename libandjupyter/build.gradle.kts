@@ -45,6 +45,6 @@ dependencies {
 tasks.register<Copy>("copyReleaseJar") {
     dependsOn("assembleRelease")
     from("build/intermediates/aar_main_jar/release/syncReleaseLibJars/classes.jar")
-    into("../libandjupyter/libs")
+    into("../libandjupyter/build/outputs/jar/")
     rename { "libandjupyter-release.jar" }
 }
