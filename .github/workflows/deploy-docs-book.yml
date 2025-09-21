@@ -1,0 +1,96 @@
+# GitHub Actions workflow for building and publishing a Jupyter Book to GitHub Pages
+# Documentation: https://jupyterbook.org/en/stable/publish/gh-pages.html
+
+name: Build and Deploy Jupyter Book
+
+# Before using this workflow, make sure GitHub Pages is enabled for your repository:
+# Navigate to `Settings` → `Pages`, and set the source to `GitHub Actions`.
+# Also ensure the workflow has sufficient permissions:
+# Go to `Settings` → `Actions` → `General`, and select `Read and write permissions`.
+
+# Trigger workflow when a new tag is pushed
+on:
+  push:
+    tags:
+      - "*"
+
+# This job installs dependencies, builds the Jupyter Book, and deploys it to GitHub Pages
+jobs:
+  deploy-book:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      pages: write
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      # Set up Python environment
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3'
+          cache: pip  # Automatically uses requirements.txt for cache key
+
+      # Install required Python packages
+      - name: Install project dependencies
+        run: pip install -r ./docs-book/requirements.txt
+
+      # (Optional) Cache executed notebooks to speed up future builds
+      # Requires the following configuration in _config.yml:
+      # execute:
+      #   execute_notebooks: cache
+      - name: Cache notebook execution results
+        uses: actions/cache@v4
+        with:
+          path: ./docs-book/_build/.jupyter_cache
+          key: jupyter-book-cache-${{ hashFiles('docs-book/requirements.txt') }}
+      
+      # Set up Java environment for Kotlin kernel
+      - name: Set up Java 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Make gradlew executable
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      # Build the Jupyter Book
+      - name: Build Jupyter Book
+        run: |
+          jupyter-book build ./docs-book
+
+      # Upload the generated HTML as a GitHub Pages artifact
+      - name: Upload built site as artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./docs-book/_build/html"
+
+      # Deploy the artifact to GitHub Pages
+      - name: Deploy site to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      # Create a ZIP archive of the HTML build
+      # - name: Archive HTML build
+      #   run: |
+      #     zip -r book-html.zip ./docs-book/_build/html
+      - name: Archive HTML build
+        run: |
+          cd docs-book/_build/html
+          zip -r ../book-html.zip .
+
+      # Create a GitHub Release and upload the ZIP archive
+      # Ensure workflow permissions: `Read and write permissions`
+      # `Settings` → `Actions` → `General` → `Workflow permissions`
+      - name: Set up GitHub CLI
+        run: sudo apt-get install gh -y
+      - name: Upload ZIP to GitHub Release
+        run: |
+          gh release create ${{github.ref_name}} ./docs-book/_build/book-html.zip
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
