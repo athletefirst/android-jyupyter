@@ -63,6 +63,10 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # Build the Android Library (AAR)
+      - name: Build Android Library(JAR)
+        run: ./gradlew :libandjupyter:copyReleaseJar
+
       # Build the Jupyter Book
       - name: Build Jupyter Book
         run: |
