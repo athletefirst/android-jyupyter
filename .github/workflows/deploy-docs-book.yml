@@ -40,9 +40,11 @@ jobs:
 
       # Make gradlew executable
       - name: Make gradlew executable
-        run: |
-          chmod +x ./gradlew
-          ./gradlew
+        run: chmod +x ./gradlew
+      
+      # Build the Android project
+      - name: Build
+        run: ./gradlew assembleRelease
 
       # Set up Python environment
       - name: Configure Python
