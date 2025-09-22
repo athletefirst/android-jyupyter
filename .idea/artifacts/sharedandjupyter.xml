@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="sharedandjupyter">
+    <output-path>$PROJECT_DIR$/sharedandjupyter/build/libs</output-path>
+    <root id="archive" name="sharedandjupyter.jar">
+      <element id="module-output" name="AndJupyter.sharedandjupyter.androidMain" />
+    </root>
+  </artifact>
+</component>

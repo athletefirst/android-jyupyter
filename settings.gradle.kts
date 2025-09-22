@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "AndJupyter"
 include(":app")
 include(":libandjupyter")
+include(":sharedandjupyter")
