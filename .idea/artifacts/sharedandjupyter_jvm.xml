@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="sharedandjupyter-jvm">
+    <output-path>$PROJECT_DIR$/sharedandjupyter/build/libs</output-path>
+    <root id="archive" name="sharedandjupyter-jvm.jar" />
+  </artifact>
+</component>
